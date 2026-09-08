@@ -17,6 +17,9 @@ let lives = 3;
 let gameState = 'playing';
 let lastTime = 0;
 let particles = [];
+const stars = Array.from({ length: 85 }, (_, i) => ({
+    x: (i * 137.7) % 1800, y: 28 + ((i * 71.3) % 190), size: i % 7 === 0 ? 2 : 1, alpha: .25 + (i % 5) * .12
+}));
 
 const platforms = [
     { x: 0, y: 350, w: 900, h: 80 }, { x: 1020, y: 350, w: 650, h: 80 },
@@ -125,16 +128,36 @@ function update(dt) {
 function draw() {
     const w = canvas.clientWidth, h = canvas.clientHeight, scale = h / 430;
     ctx.save(); ctx.scale(scale, scale); const viewW = w / scale;
-    const gradient = ctx.createLinearGradient(0, 0, 0, 430); gradient.addColorStop(0, '#11152e'); gradient.addColorStop(1, '#252143');
+    const gradient = ctx.createLinearGradient(0, 0, 0, 430); gradient.addColorStop(0, '#080b20'); gradient.addColorStop(.52, '#17183d'); gradient.addColorStop(1, '#30254c');
     ctx.fillStyle = gradient; ctx.fillRect(0, 0, viewW, 430);
-    ctx.fillStyle = '#e9e5ce'; ctx.globalAlpha = .9; ctx.beginPath(); ctx.arc(viewW - 80, 76, 31, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#11152e'; ctx.beginPath(); ctx.arc(viewW - 68, 68, 29, 0, Math.PI * 2); ctx.fill(); ctx.globalAlpha = 1;
+    stars.forEach(star => { ctx.globalAlpha = star.alpha; ctx.fillStyle = '#d9e8ff'; ctx.fillRect((star.x - camera * .08) % (viewW + 80), star.y, star.size, star.size); });
+    ctx.globalAlpha = .12; ctx.fillStyle = '#a889ff'; ctx.beginPath(); ctx.arc(viewW - 80, 76, 60, 0, Math.PI * 2); ctx.fill();
+    ctx.globalAlpha = .95; ctx.fillStyle = '#f4edcf'; ctx.beginPath(); ctx.arc(viewW - 80, 76, 31, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#11152e'; ctx.beginPath(); ctx.arc(viewW - 68, 68, 29, 0, Math.PI * 2); ctx.fill(); ctx.globalAlpha = 1;
     ctx.fillStyle = '#303057'; for (let i = 0; i < 16; i++) { const x = i * 430 - camera * .18; ctx.beginPath(); ctx.moveTo(x, 350); ctx.lineTo(x + 180, 155 + (i % 3) * 35); ctx.lineTo(x + 390, 350); ctx.fill(); }
+    ctx.fillStyle = '#171a36'; for (let i = 0; i < 24; i++) { const x = i * 210 - camera * .32; const height = 28 + (i % 4) * 16; ctx.fillRect(x, 350 - height, 90 + (i % 3) * 20, height); ctx.fillStyle = '#73e1dc'; ctx.globalAlpha = .2; for (let y = 350 - height + 10; y < 342; y += 13) ctx.fillRect(x + 10, y, 4, 3); ctx.fillStyle = '#171a36'; ctx.globalAlpha = 1; }
     ctx.save(); ctx.translate(-camera, 0);
-    platforms.forEach(p => { ctx.fillStyle = p.h > 20 ? '#252748' : '#565383'; ctx.fillRect(p.x, p.y, p.w, p.h); ctx.fillStyle = '#73e1dc'; ctx.globalAlpha = .7; ctx.fillRect(p.x, p.y, p.w, 3); ctx.globalAlpha = 1; });
-    coins.forEach(c => { if (!c.collected) { ctx.fillStyle = '#ffd866'; ctx.beginPath(); ctx.arc(c.x, c.y + Math.sin(performance.now() / 260 + c.x) * 3, 8, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#fff3af'; ctx.fillRect(c.x - 1, c.y - 5, 2, 10); } });
-    enemies.forEach(e => { if (e.alive) { ctx.fillStyle = '#f06b91'; ctx.fillRect(e.x, e.y, e.w, e.h); ctx.fillStyle = '#17182e'; ctx.fillRect(e.x + 5, e.y + 7, 5, 5); ctx.fillRect(e.x + 16, e.y + 7, 5, 5); } });
-    ctx.fillStyle = '#73e1dc'; ctx.fillRect(goal.x, goal.y, 5, 110); ctx.fillStyle = '#a889ff'; ctx.beginPath(); ctx.arc(goal.x + 24, goal.y + 10, 24, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#fff'; ctx.globalAlpha = .5; ctx.beginPath(); ctx.arc(goal.x + 24, goal.y + 10, 13, 0, Math.PI * 2); ctx.fill(); ctx.globalAlpha = 1;
-    if (!(player.invincible > 0 && Math.floor(player.invincible * 12) % 2 === 0)) { ctx.fillStyle = '#f4f3ee'; ctx.fillRect(player.x, player.y + 9, player.w, player.h - 9); ctx.fillStyle = '#a889ff'; ctx.fillRect(player.x + 3, player.y, player.w - 6, 15); ctx.fillStyle = '#1a1930'; ctx.fillRect(player.x + (player.facing > 0 ? 16 : 3), player.y + 6, 4, 3); if (player.attack > 0) { ctx.strokeStyle = '#ffd866'; ctx.lineWidth = 5; ctx.beginPath(); ctx.arc(player.x + player.w / 2 + player.facing * 18, player.y + 19, 22, player.facing > 0 ? -.9 : 2.2, player.facing > 0 ? .9 : 4); ctx.stroke(); } }
+    platforms.forEach(p => { ctx.fillStyle = p.h > 20 ? '#202445' : '#4b4a7b'; ctx.fillRect(p.x, p.y, p.w, p.h); ctx.fillStyle = '#73e1dc'; ctx.globalAlpha = .8; ctx.fillRect(p.x, p.y, p.w, 3); ctx.globalAlpha = .22; ctx.fillStyle = '#a889ff'; for (let x = p.x + 15; x < p.x + p.w; x += 35) ctx.fillRect(x, p.y + 14, 14, 2); ctx.globalAlpha = 1; });
+    coins.forEach(c => { if (!c.collected) { const bob = Math.sin(performance.now() / 260 + c.x) * 3; ctx.globalAlpha = .18; ctx.fillStyle = '#ffd866'; ctx.beginPath(); ctx.arc(c.x, c.y + bob, 16, 0, Math.PI * 2); ctx.fill(); ctx.globalAlpha = 1; ctx.fillStyle = '#ffd866'; ctx.beginPath(); ctx.arc(c.x, c.y + bob, 8, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#fff3af'; ctx.fillRect(c.x - 1, c.y + bob - 5, 2, 10); } });
+    enemies.forEach(e => { if (e.alive) { ctx.fillStyle = '#eb5b86'; ctx.beginPath(); ctx.moveTo(e.x, e.y + e.h); ctx.lineTo(e.x + 3, e.y + 7); ctx.lineTo(e.x + 8, e.y); ctx.lineTo(e.x + 14, e.y + 6); ctx.lineTo(e.x + 21, e.y); ctx.lineTo(e.x + e.w, e.y + 8); ctx.lineTo(e.x + e.w, e.y + e.h); ctx.closePath(); ctx.fill(); ctx.fillStyle = '#17182e'; ctx.fillRect(e.x + 5, e.y + 10, 5, 5); ctx.fillRect(e.x + 16, e.y + 10, 5, 5); } });
+    ctx.globalAlpha = .18; ctx.fillStyle = '#73e1dc'; ctx.fillRect(goal.x - 8, goal.y - 8, 65, 125); ctx.globalAlpha = 1; ctx.fillStyle = '#73e1dc'; ctx.fillRect(goal.x, goal.y, 5, 110); ctx.fillStyle = '#a889ff'; ctx.beginPath(); ctx.arc(goal.x + 24, goal.y + 10, 24, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#fff'; ctx.globalAlpha = .65; ctx.beginPath(); ctx.arc(goal.x + 24, goal.y + 10, 13, 0, Math.PI * 2); ctx.fill(); ctx.globalAlpha = 1;
+    if (!(player.invincible > 0 && Math.floor(player.invincible * 12) % 2 === 0)) {
+        const px = player.x, py = player.y, dir = player.facing;
+        ctx.globalAlpha = .28; ctx.fillStyle = '#73e1dc'; ctx.beginPath(); ctx.ellipse(px + 12, py + 41, 20, 5, 0, 0, Math.PI * 2); ctx.fill(); ctx.globalAlpha = 1;
+        ctx.save(); ctx.shadowColor = '#a889ff'; ctx.shadowBlur = 10;
+        ctx.fillStyle = '#090c20'; ctx.beginPath();
+        ctx.moveTo(px + 5, py + 13); ctx.lineTo(px - dir * 10, py + 23); ctx.lineTo(px - dir * 4, py + 39);
+        ctx.lineTo(px + 9, py + 34); ctx.lineTo(px + 19, py + 39); ctx.lineTo(px + 21, py + 14); ctx.closePath(); ctx.fill();
+        ctx.restore();
+        ctx.fillStyle = '#11142c'; ctx.fillRect(px - 2, py + 8, player.w + 4, player.h + 1);
+        ctx.fillStyle = '#f4f3ee'; ctx.beginPath(); ctx.moveTo(px + 3, py + 10); ctx.lineTo(px + 21, py + 10); ctx.lineTo(px + 20, py + 33); ctx.lineTo(px + 15, py + 38); ctx.lineTo(px + 7, py + 38); ctx.lineTo(px + 3, py + 33); ctx.closePath(); ctx.fill();
+        ctx.fillStyle = '#a889ff'; ctx.beginPath(); ctx.moveTo(px + 3, py + 2); ctx.lineTo(px + 12, py - 2); ctx.lineTo(px + 21, py + 3); ctx.lineTo(px + 19, py + 15); ctx.lineTo(px + 5, py + 15); ctx.closePath(); ctx.fill();
+        ctx.fillStyle = '#73e1dc'; ctx.fillRect(px + 5, py + 16, 14, 3);
+        ctx.fillStyle = '#ffd866'; ctx.fillRect(px + 7, py + 19, 10, 2);
+        ctx.fillStyle = '#1a1930'; ctx.fillRect(px + (dir > 0 ? 16 : 4), py + 6, 4, 3);
+        ctx.fillStyle = '#a889ff'; ctx.fillRect(px + 4, py + 35, 6, 5); ctx.fillRect(px + 15, py + 35, 6, 5);
+        if (Math.abs(player.vx) > 80) { ctx.globalAlpha = .28; ctx.fillStyle = '#73e1dc'; ctx.fillRect(px - dir * 13, py + 15, 8, 3); ctx.fillRect(px - dir * 20, py + 23, 13, 2); ctx.globalAlpha = 1; }
+        if (player.attack > 0) { ctx.strokeStyle = '#ffd866'; ctx.lineWidth = 5; ctx.shadowColor = '#ffd866'; ctx.shadowBlur = 12; ctx.beginPath(); ctx.arc(px + player.w / 2 + dir * 18, py + 19, 22, dir > 0 ? -.9 : 2.2, dir > 0 ? .9 : 4); ctx.stroke(); ctx.shadowBlur = 0; }
+    }
     particles.forEach(p => { ctx.globalAlpha = p.life * 2; ctx.fillStyle = p.color; ctx.fillRect(p.x, p.y, 4, 4); ctx.globalAlpha = 1; });
     ctx.restore(); ctx.restore();
 }

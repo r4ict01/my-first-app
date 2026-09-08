@@ -16,7 +16,9 @@
 body {
     margin: 0;
     min-height: 100vh;
-    background: #0b0c18;
+    background:
+        radial-gradient(circle at 50% -10%, #353469 0, transparent 42%),
+        linear-gradient(135deg, #070914 0%, #11132b 52%, #090b18 100%);
     color: var(--ink);
     font-family: 'Space Grotesk', sans-serif;
 }
@@ -49,14 +51,15 @@ h1 span { color: var(--purple); }
     padding: 13px 17px;
     border: 1px solid var(--line);
     border-radius: 9px;
-    background: var(--panel);
+    background: linear-gradient(145deg, rgba(31, 31, 64, .84), rgba(12, 14, 31, .82));
     backdrop-filter: blur(12px);
+    box-shadow: inset 0 1px rgba(255,255,255,.08), 0 8px 25px rgba(0,0,0,.18);
 }
 .hud-card strong { display: block; font: 500 17px 'DM Mono', monospace; letter-spacing: .08em; }
 .progress-card { flex: 1; }
 .progress-track { width: 100%; height: 8px; margin-top: 10px; overflow: hidden; border-radius: 10px; background: rgba(255,255,255,.1); }
 .progress-track span { display: block; width: 0%; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--purple), var(--cyan)); transition: width .2s; }
-.stage-wrap { position: relative; overflow: hidden; border: 1px solid rgba(167, 137, 255, .35); border-radius: 13px; box-shadow: 0 18px 60px rgba(0,0,0,.35); }
+.stage-wrap { position: relative; overflow: hidden; border: 1px solid rgba(167, 137, 255, .5); border-radius: 13px; box-shadow: 0 18px 60px rgba(0,0,0,.45), 0 0 45px rgba(115, 225, 220, .08); }
 canvas { display: block; width: 100%; aspect-ratio: 2 / 1; background: #12152b; }
 .message {
     position: absolute; inset: 0; display: grid; place-content: center; justify-items: center;
