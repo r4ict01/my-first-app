@@ -1,11 +1,58 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Moonlight Runner</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    ようこそ私のページへ！
+    <main class="game-shell">
+        <header class="topbar">
+            <div>
+                <p class="eyebrow">SIDE-SCROLL ACTION MVP</p>
+                <h1>Moonlight <span>Runner</span></h1>
+            </div>
+            <div class="legend">
+                <span><b>← →</b> 移動</span>
+                <span><b>SPACE</b> ジャンプ</span>
+                <span><b>F</b> 攻撃</span>
+            </div>
+        </header>
+
+        <section class="hud" aria-label="ゲーム情報">
+            <div class="hud-card">
+                <span class="hud-label">SCORE</span>
+                <strong id="score">000000</strong>
+            </div>
+            <div class="hud-card">
+                <span class="hud-label">HEART</span>
+                <strong id="lives">♥ ♥ ♥</strong>
+            </div>
+            <div class="hud-card progress-card">
+                <span class="hud-label">DISTANCE</span>
+                <div class="progress-track"><span id="progress"></span></div>
+            </div>
+        </section>
+
+        <section class="stage-wrap">
+            <canvas id="game" aria-label="Moonlight Runner ゲーム画面"></canvas>
+            <div id="message" class="message hidden">
+                <p class="message-kicker">MOONLIGHT RUNNER</p>
+                <h2 id="message-title">ステージクリア！</h2>
+                <p id="message-copy">夜明けまで走りきった。</p>
+                <button id="restart" type="button">もう一度プレイ</button>
+            </div>
+        </section>
+
+        <div class="touch-controls" aria-label="タッチ操作">
+            <button data-key="left" aria-label="左へ">←</button>
+            <button data-key="jump" aria-label="ジャンプ">↑</button>
+            <button data-key="right" aria-label="右へ">→</button>
+            <button data-key="attack" aria-label="攻撃">✦</button>
+        </div>
+        <p class="tip">コインを集めて、光るゲートを目指そう。敵は <b>F</b> で倒せます。</p>
+    </main>
+    <script src="script.js"></script>
 </body>
 </html>
